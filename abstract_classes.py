@@ -1,9 +1,9 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import Any
 from functions import *
 
 
-class MyBaseClass():
+class MyBaseClass(ABC):
     def __init__(self, func, *args, **kwargs):
         self.func = func #function that will be called 
         self.args = args
@@ -34,11 +34,6 @@ class GeneralStyle(MyBaseClass):
     '''intended to serve for other functions, not related to contacts or notes'''
     def call_function(self):
         return self.func(*self.args, **self.kwargs)
-
-
-class MyTest():
-    def __call__(self, *args: Any, **kwds: Any) -> Any:
-        pass
 
 
 
