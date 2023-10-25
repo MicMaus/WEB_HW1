@@ -322,7 +322,7 @@ def search(search_word):
         except AttributeError:
             note_str = "No note recorded"
 
-        if (search_word in name) or (search_word in phone_numbers) or (search_word == birthday_str) or (search_word in note_str):
+        if (search_word in name) or (search_word in phone_numbers) or (search_word in birthday_str) or (search_word in note_str):
             result.append(show_contact(name))
 
     if result:
@@ -479,10 +479,10 @@ commands = {
     "edit text": edit_text,
     "delete tag": delete_tag,
     "new tags": add_tags,
-    "sort files": sort_files,
+    "find tags": find_by_tag,
     "sms": send_sms,
     "call": call,
-    "find tags": find_by_tag,
+    "sort files": sort_files,
     "config": bot_config,
     "good bye": close_bot,
     "close": close_bot,
