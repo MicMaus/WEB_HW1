@@ -1,7 +1,8 @@
-from datetime import datetime
 from collections import UserDict
-from error_handl_decorator import CustomError
+from datetime import datetime
 from pickle import dump, load
+
+from error_handl_decorator import CustomError
 
 DATETIME_FORMAT = "%H:%M:%S %d.%m.%Y"
 

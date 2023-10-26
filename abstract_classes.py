@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from functions import *
+
 from error_handl_decorator import error_handling_decorator
 
 

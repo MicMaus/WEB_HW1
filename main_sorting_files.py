@@ -1,11 +1,13 @@
+import shutil
 import sys
 import time
 from pathlib import Path
-from tqdm import tqdm 
+
 from colorama import Fore, Style
-import shutil
-import scan
+from tqdm import tqdm
+
 import normalize
+import scan
 
 
 def handle_file(path, root_folder, dist):

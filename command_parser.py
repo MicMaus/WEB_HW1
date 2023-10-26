@@ -1,4 +1,3 @@
-from functions import *
 from abstract_classes import *
 
 # commands parser, which calls the functions providing needed arguments

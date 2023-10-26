@@ -1,8 +1,9 @@
-from error_handl_decorator import CustomError
-from collections import UserDict
-import re
 import datetime
 import pickle
+from collections import UserDict
+
+from error_handl_decorator import CustomError
+
 
 # classes
 class Field:

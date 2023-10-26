@@ -1,13 +1,13 @@
-from error_handl_decorator import CustomError, error_handling_decorator
-from classes import *
-from input_format_verification import *
 import difflib  # matches library
-from notebook import *
-from pathlib import Path
-import main_sorting_files
+
 from twilio.rest import Client
-from user_config import Config
+
+import main_sorting_files
+from classes import *
 from gen_config import *
+from input_format_verification import *
+from notebook import *
+from user_config import Config
 
 config = Config(CONFIG_FILE)
 notes = NoteBook()
