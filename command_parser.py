@@ -1,5 +1,5 @@
 from abstract_classes import *
-
+from functions import *
 # commands parser, which calls the functions providing needed arguments
 
 

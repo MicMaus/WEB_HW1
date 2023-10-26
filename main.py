@@ -1,5 +1,5 @@
 from abstract_classes import *
-from command_parser import parse_input
+from command_parser import parse_input, bot_config
 
 # tuple of commands to close the bot
 close_app = ('exit', 'good bye', 'close')
