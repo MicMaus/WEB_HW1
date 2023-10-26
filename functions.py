@@ -1,4 +1,4 @@
-from error_handl_decorator import CustomError
+from error_handl_decorator import CustomError, error_handling_decorator
 from classes import *
 from input_format_verification import *
 import difflib  # matches library

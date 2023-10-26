@@ -1,11 +1,9 @@
 from functions import *
-from error_handl_decorator import error_handling_decorator
 from abstract_classes import *
 
 # commands parser, which calls the functions providing needed arguments
 
 
-@error_handling_decorator
 def parse_input(user_input):
     user_input = check_command(user_input, commands)
     for request in commands:  # dict with commands

@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from functions import *
+from error_handl_decorator import error_handling_decorator
 
 
 class MyBaseClass(ABC):
@@ -11,7 +12,8 @@ class MyBaseClass(ABC):
     @abstractmethod
     def call_function(self, *args, **kwargs):
         pass
-
+    
+    @error_handling_decorator
     def display_style(self):
         '''here visual style for all subclasses can be defined'''
         return self.call_function()
