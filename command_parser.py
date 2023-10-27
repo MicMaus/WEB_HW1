@@ -48,7 +48,7 @@ def parse_input(user_input):
 
                 elif info_to_amend == 'note':
                     note = input('please provide the new note: ')
-                    return ContactStyle(add_contact,name, note=note)
+                    return ContactStyle(add_contact, name, note=note)
 
                 elif info_to_delete != 'phone' and info_to_delete != 'birthday' and info_to_delete != 'email' and info_to_delete != 'address' and info_to_delete != 'note':
                     raise CustomError("please provide valid field to amend")
