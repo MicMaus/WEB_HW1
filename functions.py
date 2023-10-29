@@ -8,11 +8,10 @@ from gen_config import *
 from input_format_verification import *
 from notebook import *
 from user_config import Config
+from error_handl_decorator import *
 
 config = Config(CONFIG_FILE)
 notes = NoteBook()
-
-# Luda
 
 
 def view_notes():
@@ -82,26 +81,26 @@ def input_note_params(param: str):
     value = ""
     while not correct:
         if param == "id":
-            value = input('Please provide a note id: ')
+            value = input("Please provide a note id: ")
             correct = value in notes
 
         elif param == "text":
-            print('Please write your note here (double enter to finish): ')
+            print("Please write your note here (double enter to finish): ")
             value = []
             while True:
                 new_text = input()
                 if not new_text:
                     break
                 value.append(new_text)
-            value = '\n'.join(value)
+            value = "\n".join(value)
             correct = value != ""
 
         elif param == "tag":
-            value = input('Please provide a tag: ')
+            value = input("Please provide a tag: ")
             correct = value in notes.tag_cloud
 
         elif param == "tags":
-            value = input('Please provide tags separated with spaces: ')
+            value = input("Please provide tags separated with spaces: ")
             correct = value != ""
 
         elif param == "show_desc":
@@ -115,7 +114,7 @@ def input_note_params(param: str):
     return value
 
 
-def str_to_tags(text: str) -> [str]:
+def str_to_tags(text: str):
     tags = []
     for tag in text.split(" "):
         if not tag:
@@ -128,8 +127,7 @@ def str_to_tags(text: str) -> [str]:
 
 # parameter cutoff regulates sensitivity for matching, 1.0 - full match, 0.0 - input always matches
 def find_closest_match(user_input, commands):
-    closest_match = difflib.get_close_matches(
-        user_input, commands, n=1, cutoff=0.6)
+    closest_match = difflib.get_close_matches(user_input, commands, n=1, cutoff=0.6)
     if closest_match:
         return closest_match[0]
     else:
@@ -149,6 +147,7 @@ def check_command(user_input, commands):
 
 
 # adding new contact/phone number
+@error_handling_decorator
 def add_contact(name, phone=None, birthday=None, email=None, address=None, note=None):
     if not name:
         raise CustomError("Please provide a name")
@@ -176,14 +175,16 @@ def add_contact(name, phone=None, birthday=None, email=None, address=None, note=
 def change_info():  # does not do any actions, for correct functionality of commands only
     pass
 
+
 # change the phone number
 
 
+@error_handling_decorator
 def change_phone(name, new_phone, old_phone):
-
     if not new_phone or not old_phone:
         raise CustomError(
-            "Please provide a name, a new number and an old number separated by a space")
+            "Please provide a name, a new number and an old number separated by a space"
+        )
 
     record = phone_book[name]
     record.amend_phone(name, new_phone, old_phone)
@@ -191,41 +192,40 @@ def change_phone(name, new_phone, old_phone):
 
 
 def remove_contact(name):
-
     del phone_book[name]
     return "Contact successfully removed"
 
 
+@error_handling_decorator
 def remove_info(name, field_to_remove, phone=None):
-
     record = phone_book[name]
     if phone:
         record.remove_phone(phone)
         return "Phone number successfully removed"
 
-    elif field_to_remove == 'birthday':
-        if hasattr(record, 'birthday'):
+    elif field_to_remove == "birthday":
+        if hasattr(record, "birthday"):
             del record.birthday
             return "Birthday successfully removed"
         else:
             raise CustomError("No birthday exist for this contact")
 
-    elif field_to_remove == 'email':
-        if hasattr(record, 'email'):
+    elif field_to_remove == "email":
+        if hasattr(record, "email"):
             del record.email
             return "Email successfully removed"
         else:
             raise CustomError("No email exist for this contact")
 
-    elif field_to_remove == 'address':
-        if hasattr(record, 'address'):
+    elif field_to_remove == "address":
+        if hasattr(record, "address"):
             del record.address
             return "Address successfully removed"
         else:
             raise CustomError("No address exist for this contact")
 
-    elif field_to_remove == 'note':
-        if hasattr(record, 'note'):
+    elif field_to_remove == "note":
+        if hasattr(record, "note"):
             del record.note
             return "Note successfully removed"
         else:
@@ -234,7 +234,6 @@ def remove_info(name, field_to_remove, phone=None):
 
 # show contact details of user
 def show_contact(name):
-
     record = phone_book[name]
     phone_numbers = []
 
@@ -244,43 +243,47 @@ def show_contact(name):
     if len(phone_numbers) > 0:
         phone_str = f"{', '.join(phone_numbers)}"
     else:
-        phone_str = 'No phone numbers'
+        phone_str = "No phone numbers"
 
-    if hasattr(record, 'birthday'):
-        birthday_str = record.birthday.value.strftime('%Y-%m-%d')
+    if hasattr(record, "birthday"):
+        birthday_str = record.birthday.value.strftime("%Y-%m-%d")
     else:
-        birthday_str = 'No birthday recorded'
+        birthday_str = "No birthday recorded"
 
-    if hasattr(record, 'email'):
+    if hasattr(record, "email"):
         email_str = record.email.value
     else:
-        email_str = 'No email recorded'
+        email_str = "No email recorded"
 
-    if hasattr(record, 'address'):
+    if hasattr(record, "address"):
         address_str = record.address.value
     else:
-        address_str = 'No address recorded'
+        address_str = "No address recorded"
 
-    if hasattr(record, 'note'):
+    if hasattr(record, "note"):
         note_str = record.note.value
     else:
-        note_str = 'No note recorded'
+        note_str = "No note recorded"
 
-    return f"{name}: {phone_str}, {birthday_str}, {email_str}, {address_str}, {note_str}"
+    return (
+        f"{name}: {phone_str}, {birthday_str}, {email_str}, {address_str}, {note_str}"
+    )
 
 
 # show all contacts info
+@error_handling_decorator
 def show_all():
     contacts = []
     for record in phone_book:
         one_contact = show_contact(record)
         contacts.append(one_contact)
     if contacts:
-        return ';\n'.join(contacts)
+        return ";\n".join(contacts)
     else:
         raise CustomError("Phone book is empty")
 
 
+@error_handling_decorator
 def show_page(page):
     try:
         page_number = int(page)
@@ -293,7 +296,7 @@ def show_page(page):
 
         if page_number <= len(contact_batches):
             contacts = contact_batches[page_number - 1]
-            return ';\n'.join([show_contact(contact) for contact in contacts])
+            return ";\n".join([show_contact(contact) for contact in contacts])
         else:
             raise CustomError("Page not found")
 
@@ -302,18 +305,19 @@ def show_page(page):
 
 
 def hello():
-    return ("How can I help you? Please type your command")
+    return "How can I help you? Please type your command"
 
 
+@error_handling_decorator
 def search(search_word):
     result = []
     for name, record in phone_book.items():
         if len(record.phones) > 0:
-            phone_numbers = ', '.join(phone.value for phone in record.phones)
+            phone_numbers = ", ".join(phone.value for phone in record.phones)
         else:
-            phone_numbers = 'No phone numbers recorded'
+            phone_numbers = "No phone numbers recorded"
         try:
-            birthday_str = record.birthday.value.strftime('%Y-%m-%d')
+            birthday_str = record.birthday.value.strftime("%Y-%m-%d")
         except AttributeError:
             birthday_str = "No birthday recorded"
 
@@ -322,23 +326,30 @@ def search(search_word):
         except AttributeError:
             note_str = "No note recorded"
 
-        if (search_word in name) or (search_word in phone_numbers) or (search_word in birthday_str) or (search_word in note_str):
+        if (
+            (search_word in name)
+            or (search_word in phone_numbers)
+            or (search_word in birthday_str)
+            or (search_word in note_str)
+        ):
             result.append(show_contact(name))
 
     if result:
-        return ';\n'.join(result)
+        return ";\n".join(result)
     else:
         raise CustomError("Nothing found")
 
 
+@error_handling_decorator
 def dtb(name):
     record = phone_book[name]
-    if not hasattr(record, 'birthday'):
+    if not hasattr(record, "birthday"):
         raise CustomError("No birthday recorded")
     return record.days_to_birthday()
 
 
-# shows upcoming birthdays/
+# shows upcoming birthdays
+@error_handling_decorator
 def show_birthdays_soon(days):
     result = []
     for name, record in phone_book.items():
@@ -347,15 +358,15 @@ def show_birthdays_soon(days):
         if days_until_birthday is not None and days_until_birthday == days:
             result.append(show_contact(name))
     if result:
-        return ';\n'.join(result)
+        return ";\n".join(result)
     else:
-        raise CustomError(
-            "There are no birthdays for the specified number of days")
+        raise CustomError("There are no birthdays for the specified number of days")
 
 
+@error_handling_decorator
 def guide():
     try:
-        with open(config["help_file"], 'r') as file:
+        with open(config["help_file"], "r") as file:
             file_content = file.read()
         return file_content
     except FileNotFoundError:
@@ -366,9 +377,9 @@ def sort_files(folder_path):
     main_sorting_files.main(Path(folder_path))
 
 
+@error_handling_decorator
 def send_sms(phone_number, message):
-    if "account_sid" not in config or\
-            "auth_token" not in config:
+    if "account_sid" not in config or "auth_token" not in config:
         return "There option are not configured"
 
     account_sid = config["account_sid"]
@@ -377,18 +388,17 @@ def send_sms(phone_number, message):
     client = Client(account_sid, auth_token)
     try:
         message = client.messages.create(
-            from_=config["account_phone"],
-            body=message,
-            to=phone_number)
+            from_=config["account_phone"], body=message, to=phone_number
+        )
         message = f"Message was successfully sended on number {phone_number}!"
     except Exception as e:
         raise CustomError(f"{e.args[2]}. Check your calling settings.")
     return message
 
 
+@error_handling_decorator
 def call(phone_number, message):
-    if "account_sid" not in config or\
-            "auth_token" not in config:
+    if "account_sid" not in config or "auth_token" not in config:
         return "There option are not configured"
 
     account_sid = config["account_sid"]
@@ -396,11 +406,11 @@ def call(phone_number, message):
     client = Client(account_sid, auth_token)
     try:
         message = client.calls.create(
-            twiml=f'<Response><Say>{message}</Say></Response>',
+            twiml=f"<Response><Say>{message}</Say></Response>",
             to=phone_number,
             from_=config["account_phone"],
             machine_detection="DetectMessageEnd",
-            machine_detection_timeout=0
+            machine_detection_timeout=0,
         )
         message = f"Call on number {phone_number} was successfully doned!"
     except Exception as e:
@@ -419,8 +429,7 @@ def bot_config():
         config["user_folder"] = input_config("user_folder")
 
     notes.file_name = Path(config["user_folder"], config["notebook_file"])
-    phone_book.file_name = Path(
-        config["user_folder"], config["addressbook_file"])
+    phone_book.file_name = Path(config["user_folder"], config["addressbook_file"])
 
     config.save_config()
     return True
@@ -431,13 +440,13 @@ def input_config(param: str):
     value = ""
     while not correct:
         if param == "user_folder":
-            value = input(
-                "Please enter path to folder where all data will be stored: ")
+            value = input("Please enter path to folder where all data will be stored: ")
             correct = create_folder(value)
             response = "Path does not exist!"
         if param == "contacts_per_page":
             value = input(
-                "Please enter how many contacts per page do you want to see: ")
+                "Please enter how many contacts per page do you want to see: "
+            )
             correct = value.isdecimal()
             response = "It should be a positive decimal value"
         if not correct:

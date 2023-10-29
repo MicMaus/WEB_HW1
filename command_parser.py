@@ -1,5 +1,6 @@
 from abstract_classes import *
 from functions import *
+
 # commands parser, which calls the functions providing needed arguments
 
 
@@ -14,47 +15,58 @@ def parse_input(user_input):
                 new_phone_number = phone_input()
                 birth_date = dob_input()
                 email = email_input()
-                address = input('please provide an address: ')
-                note = input('please provide a note: ')
-                return ContactStyle(func, name, new_phone_number, birth_date, email, address, note)
+                address = input("please provide an address: ")
+                note = input("please provide a note: ")
+                return ContactStyle(
+                    func, name, new_phone_number, birth_date, email, address, note
+                )
 
             elif func == show_contact:
-                name = input('please provide a contact name: ')
+                name = input("please provide a contact name: ")
                 return ContactStyle(func, name)
 
             elif func == change_info:
                 name = name_input()
                 info_to_amend = input(
-                    'what type of information will be amended (phone / birthday / email / address / note): ')
+                    "what type of information will be amended (phone / birthday / email / address / note): "
+                )
                 contact = phone_book.get(name)
 
-                if info_to_amend == 'phone':
+                if info_to_amend == "phone":
                     print("Please choose index of the phone to be amended:")
                     old_phone_number = str(phone_index_input(contact))
                     new_phone_number = phone_input()
-                    return ContactStyle(change_phone, name, new_phone_number, old_phone_number)
+                    return ContactStyle(
+                        change_phone, name, new_phone_number, old_phone_number
+                    )
 
-                elif info_to_amend == 'birthday':
+                elif info_to_amend == "birthday":
                     birthday = dob_input()
                     return ContactStyle(add_contact, name, birthday=birthday)
 
-                elif info_to_amend == 'email':
+                elif info_to_amend == "email":
                     email = email_input()
                     return ContactStyle(add_contact, name, email=email)
 
-                elif info_to_amend == 'address':
-                    address = input('please provide the new address: ')
+                elif info_to_amend == "address":
+                    address = input("please provide the new address: ")
                     return ContactStyle(add_contact, name, address=address)
 
-                elif info_to_amend == 'note':
-                    note = input('please provide the new note: ')
+                elif info_to_amend == "note":
+                    note = input("please provide the new note: ")
                     return ContactStyle(add_contact, name, note=note)
 
-                elif info_to_delete != 'phone' and info_to_delete != 'birthday' and info_to_delete != 'email' and info_to_delete != 'address' and info_to_delete != 'note':
+                elif (
+                    info_to_delete != "phone"
+                    and info_to_delete != "birthday"
+                    and info_to_delete != "email"
+                    and info_to_delete != "address"
+                    and info_to_delete != "note"
+                ):
                     raise CustomError("please provide valid field to amend")
 
             elif func == show_page:
-                page = input('please provide the page to display: ')
+                page = input("please provide the page to display: ")
                 return ContactStyle(func, page)
 
             elif func == remove_contact:
@@ -65,20 +77,26 @@ def parse_input(user_input):
                 name = name_input()
                 contact = phone_book.get(name)
                 info_to_delete = input(
-                    'what type of information will be deleted (phone / birthday / email / address / note): ')
-                if info_to_delete == 'phone':
+                    "what type of information will be deleted (phone / birthday / email / address / note): "
+                )
+                if info_to_delete == "phone":
                     print("Please choose index of the phone to be removed:")
                     phone_number = str(phone_index_input(contact))
                     return ContactStyle(func, name, info_to_delete, phone_number)
 
-                elif info_to_delete != 'phone' and info_to_delete != 'birthday' and info_to_delete != 'email' and info_to_delete != 'address' and info_to_delete != 'note':
-                    raise CustomError(
-                        'please provide valid field to be deleted')
+                elif (
+                    info_to_delete != "phone"
+                    and info_to_delete != "birthday"
+                    and info_to_delete != "email"
+                    and info_to_delete != "address"
+                    and info_to_delete != "note"
+                ):
+                    raise CustomError("please provide valid field to be deleted")
 
                 return ContactStyle(func, name, info_to_delete)
 
             elif func == search:
-                search_word = input('please provide a search request: ')
+                search_word = input("please provide a search request: ")
                 return ContactStyle(func, search_word)
 
             elif func == dtb:
@@ -88,7 +106,7 @@ def parse_input(user_input):
             elif func == show_birthdays_soon:
                 while True:
                     try:
-                        days = int(input('Enter the number of days: '))
+                        days = int(input("Enter the number of days: "))
                         break  # Вихід із циклу, якщо користувач ввів число правильно
                     except ValueError:
                         print("Please enter a valid number.")
@@ -137,7 +155,7 @@ def parse_input(user_input):
                     message = input("Enter the SMS message: ")
 
                     phone = phone_index_input(contact)
-                    print(f'Sending sms to the number {phone}')
+                    print(f"Sending sms to the number {phone}")
                     result = GeneralStyle(func, phone, message)
                     print(result)
                     return None
@@ -151,7 +169,7 @@ def parse_input(user_input):
                     message = input("Enter the message: ")
 
                     phone = phone_index_input(contact)
-                    print(f'Calling to the number {phone}')
+                    print(f"Calling to the number {phone}")
                     result = GeneralStyle(func, phone, message)
                     print(result)
                     return None

@@ -2,7 +2,7 @@ from abstract_classes import *
 from command_parser import parse_input, bot_config
 
 # tuple of commands to close the bot
-close_app = ('exit', 'good bye', 'close')
+close_app = ("exit", "good bye", "close")
 
 
 def main():
@@ -11,11 +11,12 @@ def main():
         return
     while True:
         user_input = input(
-            "your command (type 'guide' to display list of available commands): ").lower()
+            "your command (type 'guide' to display list of available commands): "
+        ).lower()
 
         result = parse_input(user_input)
         if result is not None:
-            print(result.display_style())
+            result.display_style()
         if result == "Good bye!":
             break
 
