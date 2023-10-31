@@ -1,9 +1,41 @@
 import re
 
 # Define a string containing Ukrainian symbols and their corresponding translations
-UKRAINIAN_SYMBOLS = 'абвгдеєжзиіїйклмнопрстуфхцчшщьюя'
-TRANSLATION = ("a", "b", "v", "g", "d", "e", "je", "zh", "z", "y", "i", "ji", "j", "k", "l", "m", "n", "o", "p", "r",
-               "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "ju", "ja")
+UKRAINIAN_SYMBOLS = "абвгдеєжзиіїйклмнопрстуфхцчшщьюя"
+TRANSLATION = (
+    "a",
+    "b",
+    "v",
+    "g",
+    "d",
+    "e",
+    "je",
+    "zh",
+    "z",
+    "y",
+    "i",
+    "ji",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "r",
+    "s",
+    "t",
+    "u",
+    "f",
+    "h",
+    "ts",
+    "ch",
+    "sh",
+    "sch",
+    "",
+    "ju",
+    "ja",
+)
 
 # Create a dictionary to store the translation mappings
 TRANS = {}
@@ -25,10 +57,10 @@ def normalize(name):
     :return: The normalized string.
     """
     # Split the string into name and extension
-    name, *extension = name.split('.')
+    name, *extension = name.split(".")
 
     # Translate Ukrainian symbols and replace non-word characters with underscores
     new_name = name.translate(TRANS)
-    new_name = re.sub(r'\W', '_', new_name)
+    new_name = re.sub(r"\W", "_", new_name)
 
     return f"{new_name}"

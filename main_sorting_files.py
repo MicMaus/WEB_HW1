@@ -45,7 +45,7 @@ def handle_archive(path, root_folder):
     :return: None
     """
     #
-    new_name = normalize.normalize(path.with_suffix('').name)
+    new_name = normalize.normalize(path.with_suffix("").name)
 
     # Creates the archive folder if it doesn't exist
     archive_folder = root_folder / new_name
@@ -125,7 +125,9 @@ def main(folder_path):
     # Iterate through the categories and process their respective files
     for category_name, category_files in categories:
         if category_files:
-            with tqdm(total=len(category_files), desc=f"Processing {category_name}") as pbar:
+            with tqdm(
+                total=len(category_files), desc=f"Processing {category_name}"
+            ) as pbar:
                 for file in category_files:
                     file = Path(file)
                     handle_file(file, folder_path, category_name)
@@ -147,9 +149,9 @@ def main(folder_path):
     print(Fore.BLUE + "Sorting folder successfully completed." + Style.RESET_ALL)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     path = sys.argv[1]
-    print(f'Start in {path}')
+    print(f"Start in {path}")
 
     arg = Path(path)
     main(arg.resolve())

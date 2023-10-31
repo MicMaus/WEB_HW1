@@ -14,7 +14,7 @@ def name_input_for_add():
             return True
 
     while True:
-        input_name = input('Please provide a contact name: ')
+        input_name = input("Please provide a contact name: ")
         check = name_validation(input_name)
         if check:
             return input_name
@@ -30,7 +30,7 @@ def name_input():
             return True
 
     while True:
-        input_name = input('Please provide a contact name: ')
+        input_name = input("Please provide a contact name: ")
         check = name_validation(input_name)
         if check:
             return input_name
@@ -44,8 +44,7 @@ def dob_input():
             return birth_date
 
         else:
-
-            if not re.match(r'\d{4}-\d{2}-\d{2}', birth_date):
+            if not re.match(r"\d{4}-\d{2}-\d{2}", birth_date):
                 return False
 
             # convert to datetime format
@@ -55,16 +54,17 @@ def dob_input():
                 return False
 
             # check the date correctness
-            if not (1900 <= date_value.year <= datetime.date.today().year and
-                    1 <= date_value.month <= 12 and
-                    1 <= date_value.day <= 31):
+            if not (
+                1900 <= date_value.year <= datetime.date.today().year
+                and 1 <= date_value.month <= 12
+                and 1 <= date_value.day <= 31
+            ):
                 return False
 
             return date_value
 
     while True:
-        input_birth_date = input(
-            'Please provide a bithday in a format YYYY-MM-DD: ')
+        input_birth_date = input("Please provide a bithday in a format YYYY-MM-DD: ")
         dob = birthday_format_check(input_birth_date)
         if dob != False:
             return dob
@@ -78,13 +78,15 @@ def email_input():
         if not email:
             return True
 
-        elif not re.match(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', email):
+        elif not re.match(
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email
+        ):
             return False
 
         return True
 
     while True:
-        input_email = input('Please provide an email: ')
+        input_email = input("Please provide an email: ")
         check = email_format_check(input_email)
 
         if check:
@@ -99,8 +101,8 @@ def phone_input():
         if not phone_number:
             return True
 
-        if re.match(r'^\+\d+$', phone_number):
-            phone_digits = re.sub(r'[^\d]', '', phone_number)
+        if re.match(r"^\+\d+$", phone_number):
+            phone_digits = re.sub(r"[^\d]", "", phone_number)
             found_country = None
             for country, code in country_codes.items():
                 if phone_digits.startswith(str(code)):
@@ -112,11 +114,12 @@ def phone_input():
                 return False
         else:
             print(
-                "Invalid phone format. The number must start with + and contain digits only. Please try again.")
+                "Invalid phone format. The number must start with + and contain digits only. Please try again."
+            )
             return False
 
     while True:
-        input_phone = input('Please provide a new phone: ')
+        input_phone = input("Please provide a new phone: ")
         check = phone_format_check(input_phone)
         if check:
             return input_phone
@@ -131,7 +134,8 @@ def path_input():
 
     while True:
         input_path = input(
-            "Enter the path to the folder containing unorganized files: ")
+            "Enter the path to the folder containing unorganized files: "
+        )
         check = path_check(input_path)
         if check:
             return input_path

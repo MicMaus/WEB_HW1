@@ -11,14 +11,13 @@ class Config(UserDict):
     @property
     def config_file(self):
         return self.__config_file
-    
+
     @config_file.setter
     def config_file(self, config_file: str) -> None:
         config_path = Path(config_file)
         if config_path.exists():
             self.__config_file = config_file
             self.read_config()
-
 
     def read_config(self) -> None:
         with open(self.config_file, "r") as f:
@@ -33,9 +32,3 @@ class Config(UserDict):
         with open(self.config_file, "w") as f:
             for key, value in self.data.items():
                 f.write(f"{key}={value}\n")
-
-
-
-                
-
-

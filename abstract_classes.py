@@ -1,16 +1,12 @@
 from abc import abstractmethod, ABC
 
-from error_handl_decorator import error_handling_decorator
-
 
 class MainStyleClass(ABC):
-    def __init__(self, func, *args, **kwargs):
+    def __init__(self, func):
         self.func = func  # function that will be called
-        self.args = args
-        self.kwargs = kwargs
 
     @abstractmethod
-    def call_function(self, *args, **kwargs):
+    def call_function(self):
         pass
 
     def display_style(self):
@@ -22,18 +18,18 @@ class ContactStyle(MainStyleClass):
     """intended to serve for functions related to contacts"""
 
     def call_function(self):
-        print(self.func(*self.args, **self.kwargs))
+        print(self.func())
 
 
 class NotesStyle(MainStyleClass):
     """intended to serve for functions related to notes"""
 
     def call_function(self):
-        print(self.func(*self.args, **self.kwargs))
+        print(self.func())
 
 
 class GeneralStyle(MainStyleClass):
     """intended to serve for other functions, not related to contacts or notes"""
 
     def call_function(self):
-        print(self.func(*self.args, **self.kwargs))
+        print(self.func())

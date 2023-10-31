@@ -6,6 +6,7 @@ from error_handl_decorator import CustomError
 
 DATETIME_FORMAT = "%H:%M:%S %d.%m.%Y"
 
+
 class Note:
     def __init__(self, text: str, tags: [str]) -> None:
         self.created = datetime.now()
@@ -20,7 +21,7 @@ class Note:
     @property
     def tags(self) -> [str]:
         return self._tags
-    
+
     @tags.setter
     def tags(self, new_tags: [str]) -> None:
         self._tags = set()
@@ -40,23 +41,26 @@ class Note:
         self.tags.remove(tag)
 
     def __str__(self) -> str:
-        return f'id: {self.id}\n' \
-                f'created at: {self.created.strftime(DATETIME_FORMAT)}\n' \
-                f'{self.text}\n' \
-                f'tags: {" ".join(self.tags)}'
+        return (
+            f"id: {self.id}\n"
+            f"created at: {self.created.strftime(DATETIME_FORMAT)}\n"
+            f"{self.text}\n"
+            f'tags: {" ".join(self.tags)}'
+        )
+
 
 class NoteBook(UserDict):
-    def __init__(self, file_name: str=None) -> None:
-        self.tag_cloud = set()  #all unique tags used in notebook
+    def __init__(self, file_name: str = None) -> None:
+        self.tag_cloud = set()  # all unique tags used in notebook
         self.__file_name = None
         self.file_name = file_name
 
     @property
     def file_name(self):
         return self.__file_name
-    
+
     @file_name.setter
-    def file_name(self, file_name:str):
+    def file_name(self, file_name: str):
         self.__file_name = file_name
         self.restore()
 
@@ -90,7 +94,6 @@ class NoteBook(UserDict):
                 max = int(id)
         return str(max + 1)
 
-
     def save(self):
         with open(self.file_name, "wb") as f:
             dump(self, f)
@@ -108,17 +111,19 @@ class NoteBook(UserDict):
 
         return succsess
 
-    def find_by_tag(self, tags: [str], intersec: bool=False, show_desc: bool=True) -> [Note]:
+    def find_by_tag(
+        self, tags: [str], intersec: bool = False, show_desc: bool = True
+    ) -> [Note]:
         def get_key(note: Note) -> datetime:
             return note.created
-        
+
         notes = []
         if not tags:
             notes
         intersec_len = len(self.tag_cloud.intersection(tags))
         if intersec_len == 0 or intersec_len < len(tags) and intersec:
             return notes
-        
+
         for note in self.data.values():
             intersec_len = len(note.tags.intersection(tags))
             if intersec_len == 0 or intersec_len < len(tags) and intersec:

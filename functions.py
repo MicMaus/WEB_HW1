@@ -23,26 +23,36 @@ def view_notes():
     return message
 
 
-def add_note(text: str, tags: str) -> str:
+def add_note():
+    text = input_note_params("text")
+    tags = input_note_params("tags")
+
     tag_list = str_to_tags(tags)
     note = Note(text, tag_list)
     notes.add_note(note)
     return "Note was successfully added"
 
 
-def delete_note(id: str) -> str:
+def delete_note():
+    id = input_note_params("id")
     notes.delete_note(id)
     return "Note was successfully removed"
 
 
-def edit_text(id: str, new_text: str) -> str:
+def edit_text() -> str:
+    id = input_note_params("id")
+    new_text = input_note_params("text")
+
     note = notes.find_id(id)
     note.edit_text(new_text)
     notes.save()
     return "Note was successfully edited"
 
 
-def add_tags(id: str, tags: str) -> str:
+def add_tags() -> str:
+    id = input_note_params("id")
+    tags = input_note_params("tags")
+
     tag_list = str_to_tags(tags)
     note = notes.find_id(id)
     note.add_tags(tag_list)
@@ -50,14 +60,20 @@ def add_tags(id: str, tags: str) -> str:
     return f"Tags were successfully added to the note with id {id}"
 
 
-def delete_tag(id: str, tag: str) -> str:
+def delete_tag() -> str:
+    id = input_note_params("id")
+    tag = input_note_params("tag")
+
     note = notes.find_id(id)
     note.remowe_tag(tag)
     notes.save()
     return "Tags were successfully deleted"
 
 
-def find_by_tag(tags: str, show_desc: bool) -> str:
+def find_by_tag() -> str:
+    tags = input_note_params("tags")
+    show_desc = input_note_params("show_desc")
+
     intersec = " and " in tags
     tags = tags.replace(" and ", " ").replace(" or ", " ")
     tag_list = []
@@ -148,37 +164,83 @@ def check_command(user_input, commands):
 
 # adding new contact/phone number
 @error_handling_decorator
-def add_contact(name, phone=None, birthday=None, email=None, address=None, note=None):
-    if not name:
-        raise CustomError("Please provide a name")
-    elif name not in phone_book:
+def add_contact():
+    name = name_input_for_add()
+    phone = phone_input()
+    birthday = dob_input()
+    email = email_input()
+    address = input("please provide an address: ")
+    note = input("please provide a note: ")
+
+    if name not in phone_book:
         record = Record(name, phone, birthday, email, address, note)
         phone_book.add_record(record)
         return "New contact successfully added"
     else:
-        record = phone_book[name]
-
-        if phone:
-            record.add_new_phone(phone)
-        if birthday:
-            record.birthday = Birthday(value=birthday)
-        if email:
-            record.email = Email(value=email)
-        if address:
-            record.address = Address(value=address)
-        if note:
-            record.note = Note(value=note)
-
-        return "New information successfully added to the existing contact"
+        return "This name already exist"
 
 
-def change_info():  # does not do any actions, for correct functionality of commands only
-    pass
+@error_handling_decorator
+def change_contact_field(
+    name, phone=None, birthday=None, email=None, address=None, note=None
+):
+    record = phone_book[name]
+
+    if phone:
+        record.add_new_phone(phone)
+    elif birthday:
+        record.birthday = Birthday(value=birthday)
+    elif email:
+        record.email = Email(value=email)
+    elif address:
+        record.address = Address(value=address)
+    elif note:
+        record.note = Note(value=note)
+
+    return "New information successfully added to the existing contact"
+
+
+@error_handling_decorator
+def change_info():
+    name = name_input()
+    info_to_amend = input(
+        "what type of information will be amended (phone / birthday / email / address / note): "
+    )
+    contact = phone_book.get(name)
+
+    if info_to_amend == "phone":
+        print("Please choose index of the phone to be amended:")
+        old_phone_number = str(phone_index_input(contact))
+        new_phone_number = phone_input()
+        return change_phone(name, new_phone_number, old_phone_number)
+
+    elif info_to_amend == "birthday":
+        birthday = dob_input()
+        return change_contact_field(name, birthday=birthday)
+
+    elif info_to_amend == "email":
+        email = email_input()
+        return change_contact_field(name, email=email)
+
+    elif info_to_amend == "address":
+        address = input("please provide the new address: ")
+        return change_contact_field(name, address=address)
+
+    elif info_to_amend == "note":
+        note = input("please provide the new note: ")
+        return change_contact_field(name, note=note)
+
+    elif (
+        info_to_amend != "phone"
+        and info_to_amend != "birthday"
+        and info_to_amend != "email"
+        and info_to_amend != "address"
+        and info_to_amend != "note"
+    ):
+        raise CustomError("please provide valid field to amend")
 
 
 # change the phone number
-
-
 @error_handling_decorator
 def change_phone(name, new_phone, old_phone):
     if not new_phone or not old_phone:
@@ -191,15 +253,23 @@ def change_phone(name, new_phone, old_phone):
     return "Contact successfully changed"
 
 
-def remove_contact(name):
+def remove_contact():
+    name = name_input()
     del phone_book[name]
     return "Contact successfully removed"
 
 
 @error_handling_decorator
-def remove_info(name, field_to_remove, phone=None):
+def remove_info():
+    name = name_input()
+    contact = phone_book.get(name)
+    field_to_remove = input(
+        "what type of information will be deleted (phone / birthday / email / address / note): "
+    )
     record = phone_book[name]
-    if phone:
+    if field_to_remove == "phone":
+        print("Please choose index of the phone to be removed:")
+        phone = str(phone_index_input(contact))
         record.remove_phone(phone)
         return "Phone number successfully removed"
 
@@ -233,7 +303,9 @@ def remove_info(name, field_to_remove, phone=None):
 
 
 # show contact details of user
-def show_contact(name):
+def show_contact(name=None):
+    if not name:
+        name = name_input()
     record = phone_book[name]
     phone_numbers = []
 
@@ -284,7 +356,8 @@ def show_all():
 
 
 @error_handling_decorator
-def show_page(page):
+def show_page():
+    page = input("please provide the page to display: ")
     try:
         page_number = int(page)
         contacts_per_page = int(config["contacts_per_page"])
@@ -309,7 +382,8 @@ def hello():
 
 
 @error_handling_decorator
-def search(search_word):
+def search():
+    search_word = input("please provide a search request: ")
     result = []
     for name, record in phone_book.items():
         if len(record.phones) > 0:
@@ -341,7 +415,8 @@ def search(search_word):
 
 
 @error_handling_decorator
-def dtb(name):
+def dtb():
+    name = name_input()
     record = phone_book[name]
     if not hasattr(record, "birthday"):
         raise CustomError("No birthday recorded")
@@ -350,13 +425,22 @@ def dtb(name):
 
 # shows upcoming birthdays
 @error_handling_decorator
-def show_birthdays_soon(days):
+def show_birthdays_soon():
     result = []
+
+    while True:
+        try:
+            days = int(input("Enter the number of days: "))
+            break
+        except ValueError:
+            print("Please enter a valid number.")
+
     for name, record in phone_book.items():
         days_until_birthday = record.days_to_birthday()
 
         if days_until_birthday is not None and days_until_birthday == days:
             result.append(show_contact(name))
+
     if result:
         return ";\n".join(result)
     else:
@@ -373,12 +457,13 @@ def guide():
         raise CustomError("File not found")
 
 
-def sort_files(folder_path):
+def sort_files():
+    folder_path = path_input()
     main_sorting_files.main(Path(folder_path))
 
 
 @error_handling_decorator
-def send_sms(phone_number, message):
+def send_sms():
     if "account_sid" not in config or "auth_token" not in config:
         return "There option are not configured"
 
@@ -386,33 +471,59 @@ def send_sms(phone_number, message):
     auth_token = config["auth_token"]
 
     client = Client(account_sid, auth_token)
+
+    contact_name = name_input()
+    contact = phone_book.get(contact_name)
+    if contact:
+        message = input("Enter the SMS message: ")
+        phone = phone_index_input(contact)
+        print(f"Sending sms to the number {phone}")
+        # result = GeneralStyle(func, phone, message)
+        # # print(result)
+        # # return None
+    else:
+        return "Contact not found"
+
     try:
         message = client.messages.create(
-            from_=config["account_phone"], body=message, to=phone_number
+            from_=config["account_phone"], body=message, to=phone
         )
-        message = f"Message was successfully sended on number {phone_number}!"
+        message = f"Message was successfully sended on number {phone}!"
     except Exception as e:
         raise CustomError(f"{e.args[2]}. Check your calling settings.")
     return message
 
 
 @error_handling_decorator
-def call(phone_number, message):
+def call():
     if "account_sid" not in config or "auth_token" not in config:
         return "There option are not configured"
 
     account_sid = config["account_sid"]
     auth_token = config["auth_token"]
     client = Client(account_sid, auth_token)
+
+    contact_name = name_input()
+    contact = phone_book.get(contact_name)
+    if contact:
+        message = input("Enter the message: ")
+        phone = phone_index_input(contact)
+        print(f"Calling to the number {phone}")
+        # result = GeneralStyle(func, phone, message)
+        # print(result)
+        # return None
+    else:
+        return "Contact not found"  # or raise CustomError ?
+
     try:
         message = client.calls.create(
             twiml=f"<Response><Say>{message}</Say></Response>",
-            to=phone_number,
+            to=phone,
             from_=config["account_phone"],
             machine_detection="DetectMessageEnd",
             machine_detection_timeout=0,
         )
-        message = f"Call on number {phone_number} was successfully doned!"
+        message = f"Call on number {phone} was successfully doned!"
     except Exception as e:
         raise CustomError(f"{e.args[2]}. Check your calling settings.")
 
@@ -467,33 +578,3 @@ def create_folder(user_string: str) -> bool:
 def close_bot():
     phone_book.save_changes()
     return "Good bye!"
-
-
-commands = {
-    "add": add_contact,
-    "contact": show_contact,
-    "change field": change_info,
-    "show all": show_all,
-    "page": show_page,
-    "remove field": remove_info,
-    "remove contact": remove_contact,
-    "hello": hello,
-    "search": search,
-    "dtb": dtb,
-    "sbs": show_birthdays_soon,
-    "guide": guide,
-    "view notes": view_notes,
-    "new note": add_note,
-    "delete note": delete_note,
-    "edit text": edit_text,
-    "delete tag": delete_tag,
-    "new tags": add_tags,
-    "find tags": find_by_tag,
-    "sms": send_sms,
-    "call": call,
-    "sort files": sort_files,
-    "config": bot_config,
-    "good bye": close_bot,
-    "close": close_bot,
-    "exit": close_bot,
-}

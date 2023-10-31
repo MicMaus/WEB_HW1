@@ -12,17 +12,28 @@ unknown = list()
 extensions = set()
 
 registered_extensions = {
-    "JPEG": images_files, "PNG": images_files, "JPG": images_files, "SVG": images_files,
-
-    "AVI": video_files, "MP4": video_files, "MOV": video_files, "MKV": video_files,
-
-    "DOC": documents_files, "DOCX": documents_files, "TXT": documents_files, "PDF": documents_files,
-    "XLSX": documents_files, "PPTX": documents_files,
-
-    "MP3": audio_files, "OGG": audio_files, "WAV": audio_files, "AMR": audio_files,
-
-    "GZ": archives_files, "TAR": archives_files, "ZIP": archives_files,
-    '': unknown
+    "JPEG": images_files,
+    "PNG": images_files,
+    "JPG": images_files,
+    "SVG": images_files,
+    "AVI": video_files,
+    "MP4": video_files,
+    "MOV": video_files,
+    "MKV": video_files,
+    "DOC": documents_files,
+    "DOCX": documents_files,
+    "TXT": documents_files,
+    "PDF": documents_files,
+    "XLSX": documents_files,
+    "PPTX": documents_files,
+    "MP3": audio_files,
+    "OGG": audio_files,
+    "WAV": audio_files,
+    "AMR": audio_files,
+    "GZ": archives_files,
+    "TAR": archives_files,
+    "ZIP": archives_files,
+    "": unknown,
 }
 
 
@@ -50,7 +61,15 @@ def scan(folder):
     for item in folder.iterdir():
         if item.is_dir():
             # If the item is a directory and not one of the special folders, continue scanning
-            if item.name not in ("Images", "Documents", "Audio", "Video", "Archives", "Others", "Unknown"):
+            if item.name not in (
+                "Images",
+                "Documents",
+                "Audio",
+                "Video",
+                "Archives",
+                "Others",
+                "Unknown",
+            ):
                 folders.append(item)
                 scan(item)
             continue
@@ -69,9 +88,9 @@ def scan(folder):
             extensions.add(extension)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     path = sys.argv[1]
-    print(f'Start in {path}')
+    print(f"Start in {path}")
 
     arg = Path(path)
     scan(arg)
